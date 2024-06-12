@@ -32,7 +32,7 @@ Estrada *getEstrada(const char *nomeArquivo) {
     }
 
     for (int i = 0; i < estrada->N; i++) {
-        fscanf(arquivo, "%d %255s", &estrada->C[i].Posicao, estrada->C[i].Nome);
+        fscanf(arquivo, "%d %[^\n]", &estrada->C[i].Posicao, estrada->C[i].Nome);
         if (estrada->C[i].Posicao <= 0 || estrada->C[i].Posicao >= estrada->T) {
             free(estrada->C);
             free(estrada);

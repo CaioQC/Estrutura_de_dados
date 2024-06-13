@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "cidades.h"
 
 double menor_vizinhanca;
@@ -80,11 +81,7 @@ double calcularMenorVizinhanca(const char *nomeArquivo){
 
     for(int i = 0; i < estrada->N - 1; i++) {
         fronteira[i] = (estrada->C[i].Posicao + estrada->C[i + 1].Posicao) / 2.0;
-
-        printf("fronteira da cidade %d|%d : %.2f \n", i+1, i+2, fronteira[i]);
     }
-
-    printf("\n");
 
     double vizinhanca[tamanho_vizinhanca];
 
@@ -103,13 +100,9 @@ double calcularMenorVizinhanca(const char *nomeArquivo){
     menor_vizinhanca = vizinhanca[0];
 
     for (int i = 0; i < tamanho_vizinhanca; i++) {
-        printf("vizinhanca da cidade %d: %.2lf \n", i+1, vizinhanca[i]);
-
-        for (int j = 0; j < tamanho_vizinhanca; j++) {
-            if (vizinhanca[j] < menor_vizinhanca) {
-                menor_vizinhanca = vizinhanca[j];
-                cidade_menor_vizinhanca = j;
-            }
+        if (vizinhanca[i] < menor_vizinhanca) {
+            menor_vizinhanca = vizinhanca[i];
+            cidade_menor_vizinhanca = i;
         }
     }
 
@@ -119,16 +112,19 @@ double calcularMenorVizinhanca(const char *nomeArquivo){
     return menor_vizinhanca;
 }
 
-char *cidadeMenorVizinhanca(const char *nomeArquivo){
+char *cidadeMenorVizinhanca(const char *nomeArquivo) {
     Estrada *estrada = getEstrada(nomeArquivo);
+    if (!estrada) return NULL;
 
-    printf("\n");
+    printf("%d\n", estrada->T);
+    printf("%d\n", estrada->N);
 
-    printf("Menor vizinhanca: %.2lf\n", menor_vizinhanca);
-    printf("Cidade com menor vizinhanca: %s\n", estrada->C[cidade_menor_vizinhanca].Nome);
+    calcularMenorVizinhanca(nomeArquivo);
+    printf("%.2lf\n", menor_vizinhanca);
 
-    char *cidade = (char *)malloc(strlen(estrada->C[cidade_menor_vizinhanca].Nome) + 1);
-    strcpy(cidade, estrada->C[cidade_menor_vizinhanca].Nome);
+    printf("%s\n", estrada->C[cidade_menor_vizinhanca].Nome);
+
+    char *cidade = strdup(estrada->C[cidade_menor_vizinhanca].Nome);
 
     free(estrada->C);
     free(estrada);
